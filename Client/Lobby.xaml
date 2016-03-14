@@ -1,0 +1,130 @@
+﻿<Window x:Class="Client.Lobby"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:Client"
+        xmlns:ServerData="clr-namespace:ServerData;assembly=ServerData" 
+        Title="ED2L" Height="458" Width="773.746" Closed="Window_Closed" ResizeMode="NoResize">
+    <Window.Resources>
+        <self:ImageConverter x:Key="Conv"/>
+        <Style x:Key="myHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+        <Style x:Key="itemstyle" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick" />
+        </Style>
+        <Style x:Key="itemstyle1" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick1" />
+        </Style>
+        <Style x:Key="itemstyle2" TargetType="{x:Type ListViewItem}">
+            <EventSetter Event="MouseDoubleClick" Handler="HandleDoubleClick2" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="Resources/Background_Grey.jpg"/>
+        </Grid.Background>
+        <TextBox x:Name="txtSend" HorizontalAlignment="Left" Height="23" Margin="10,387,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="615" KeyDown="txtSend_KeyDown" Background="#FFE5E5E5" MaxLength="200" MaxLines="3"/>
+        <ListView x:Name="lstPending" HorizontalAlignment="Left" Height="125" Margin="10,25,0,0" VerticalAlignment="Top" Width="431" IsSynchronizedWithCurrentItem="True" Background="#FFABADB3" Foreground="Black" BorderBrush="#FF1B1E27" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden" ItemContainerStyle="{StaticResource itemstyle}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding NameID}"  />
+                    <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding ID}" />
+                    <GridViewColumn Header="User" Width="80
+                                    " DisplayMemberBinding="{Binding Creator}" />
+                    <GridViewColumn Header="MMR Req" Width="100" DisplayMemberBinding="{Binding MinMMR}" />
+                    <GridViewColumn Header="C" Width="25" DisplayMemberBinding="{Binding Challenge}" />
+                    <GridViewColumn Header="N" Width="25" DisplayMemberBinding="{Binding Count}" />
+                    <GridViewColumn Header="T" Width="45
+                                    " DisplayMemberBinding="{Binding Type}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView x:Name="lstStarted" HorizontalAlignment="Left" Height="125" Margin="446,25,0,0" IsSynchronizedWithCurrentItem="True" VerticalAlignment="Top" Width="150" RenderTransformOrigin="0.623,0.496" Panel.ZIndex="-3" BorderBrush="#FF1B1E27" Background="#FFABADB3" Foreground="Black" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="ID" Width="30" DisplayMemberBinding="{Binding ID}" />
+                    <GridViewColumn Header="Name" Width="110" DisplayMemberBinding="{Binding NameID}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView x:Name="lstScore" HorizontalAlignment="Left" Height="125" Margin="601,25,0,0" VerticalAlignment="Top" Width="150" Background="#FFABADB3" BorderBrush="#FF1B1E27" Foreground="Black" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="User" Width="100" DisplayMemberBinding="{Binding Username}" />
+                    <GridViewColumn Header="Points" Width="40" DisplayMemberBinding="{Binding Points}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <TextBlock x:Name="txbPending" HorizontalAlignment="Left" Margin="168,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="146" Height="21" TextAlignment="Center" Foreground="White"><Run Text="Pending"/><LineBreak/><Run/></TextBlock>
+        <TextBlock HorizontalAlignment="Left" Margin="450,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="146" Height="21" TextAlignment="Center" Text="Started" Foreground="White"/>
+        <TextBlock HorizontalAlignment="Left" Margin="605,4,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="146" Height="21" TextAlignment="Center" Foreground="White"><Run Text="Scoreboard"/><LineBreak/><Run/></TextBlock>
+        <ListView x:Name="lstUsers" HorizontalAlignment="Left" Height="233" Margin="630,177,0,0" VerticalAlignment="Top" Width="121" IsSynchronizedWithCurrentItem="False" Background="#FFABB0B3" BorderBrush="#FF1B1E27" Foreground="Black" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden" ItemContainerStyle="{StaticResource itemstyle1}">
+            <ListView.View>
+                <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                    <GridViewColumn Header="I" Width="24">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Image Source="{Binding Path=Icon, Converter={StaticResource Conv}}" Width="12" Height="12"/>
+                                </Grid>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="User" Width="83" DisplayMemberBinding="{Binding Username}" />
+                </GridView>
+            </ListView.View>
+            <ListView.ContextMenu>
+            <ContextMenu>
+                    <MenuItem Header="PM" Click="MenuItemPM_Click"/>
+                    <MenuItem Header="Stats" Click="MenuItemStats_Click"/>
+                    <MenuItem Header="Mute" Click="MenuItemMute_Click"/>
+                    <MenuItem Header="Unmute" Click="MenuItemUnmute_Click"/>
+                    <MenuItem Header="Kick" Click="MenuItemKick_Click"/>
+                    <MenuItem Header="Ban" Click="MenuItemBan_Click"/>
+                    <MenuItem Header="Demote" Click="MenuItemDemote_Click"/>
+                    <MenuItem Header="Promote" Click="MenuItemPromote_Click"/>
+                    <MenuItem Header="Assign">
+                        <MenuItem Header="Division B" Click="MenuItemAssignDivB_Click"/>
+                        <MenuItem Header="Division A" Click="MenuItemAssignDivA_Click"/>
+                        <MenuItem Header="Division S" Click="MenuItemAssignDivS_Click"/>
+                    </MenuItem>
+                </ContextMenu>
+         </ListView.ContextMenu>
+        </ListView>
+        <TabControl x:Name="tbcMain" HorizontalAlignment="Left" Height="229" Margin="10,153,0,0" VerticalAlignment="Top" Width="615" Background="#FF3A3333">
+            <TabItem x:Name="tabGen" Header="General" HorizontalAlignment="Left" Width="59" Height="22" Margin="-2,-2,0,0" VerticalAlignment="Bottom" MouseLeftButtonUp="tabGen_MouseLeftButtonUp">
+                <Grid x:Name="tabMain" Background="#FFE5E5E5">
+                    <RichTextBox x:Name="txtGen" ScrollViewer.CanContentScroll="True" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Background="#FF383737" Block.LineHeight="6"/>
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="tabDiv" Header="Division" HorizontalAlignment="Left" Height="22" VerticalAlignment="Bottom" Width="67" Margin="-1,0,0,0" MouseLeftButtonUp="tabDiv_MouseLeftButtonUp">
+                <RichTextBox x:Name="txtDiv" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Background="#FF383737" BorderBrush="#FF1A264B" Block.LineHeight="6"/>
+            </TabItem>
+            <TabItem x:Name="tabGame" Header="Game" HorizontalAlignment="Left" Height="22" VerticalAlignment="Top" Width="55" Margin="424,0,-424,0" MouseLeftButtonUp="tabGame_MouseLeftButtonUp" IsEnabled="False">
+                <RichTextBox x:Name="txtGame" VerticalScrollBarVisibility="Visible" IsReadOnly="True" Background="#FF383737" Block.LineHeight="6"/>
+            </TabItem>
+        </TabControl>
+        <ListView x:Name="lstDire" HorizontalAlignment="Left" Height="125" Margin="10,23,0,0" VerticalAlignment="Top" Width="124" Background="#FFABADB3" BorderBrush="#FF1B1E27" Foreground="Black" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Visibility="Collapsed">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Dire" Width="115" DisplayMemberBinding="{Binding}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView x:Name="lstRadiant" HorizontalAlignment="Left" Height="125" Margin="168,23,0,0" VerticalAlignment="Top" Width="125" Background="#FFABADB3" BorderBrush="#FF1B1E27" Foreground="Black" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Visibility="Collapsed"> 
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Radiant" Width="115" DisplayMemberBinding="{Binding}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView x:Name="lstGUsers" HorizontalAlignment="Left" Height="233" Margin="630,177,0,0" VerticalAlignment="Top" Width="121" IsSynchronizedWithCurrentItem="False" Background="#FFABADB3" BorderBrush="#FF1B1E27" Foreground="#FF000000" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Visibility="Collapsed" ItemContainerStyle="{StaticResource itemstyle2}">
+            <ListView.View>
+                <GridView ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
+                    <GridViewColumn Header="User" Width="83" DisplayMemberBinding="{Binding}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+    </Grid>
+</Window>
